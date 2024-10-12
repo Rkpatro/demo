@@ -1,11 +1,5 @@
-# syntax=docker/dockerfile:1
-FROM busybox:latest
-COPY --chmod=755 <<EOF /app/run.sh
-#!/bin/sh
-while true; do
-  echo -ne "The time is now $(date +%T)\\r"
-  sleep 1
-done
-EOF
+# Use the official Apache HTTP Server image from the Docker Hub
+FROM httpd:latest
 
-ENTRYPOINT /app/run.sh
+# Copy a custom 'index.html' into the Apache server's root directory for hosting
+COPY ./index.html /usr/local/apache2/htdocs/

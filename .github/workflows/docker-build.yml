@@ -27,7 +27,7 @@ jobs:
       with:
         context: .  # Context to your Dockerfile location
         push: true  # Push the image after building
-        tags: yourdockerhubusername/your-repo-name:latest
+        tags: roshan450/docker_repo_13oct:latest
 
   
     

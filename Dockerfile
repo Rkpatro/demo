@@ -1,5 +1,18 @@
-# Use the official Apache HTTP Server image from the Docker Hub
-FROM httpd:latest
+# Rasa Dockerfile
+# Use the official Rasa image
+FROM rasa/rasa:latest-full
 
-# Copy a custom 'index.html' into the Apache server's root directory for hosting
-COPY ./index.html /usr/local/apache2/htdocs/
+# Copy any additional files (if you have custom components or code)
+COPY . /app
+
+# Set the working directory
+WORKDIR /app
+
+# Install any additional dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the Rasa port
+EXPOSE 5005
+
+# Run Rasa server
+CMD ["run", "--cors", "*", "--enable-api", "--debug"]

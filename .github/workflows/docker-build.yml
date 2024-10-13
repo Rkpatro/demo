@@ -29,11 +29,5 @@ jobs:
         push: true  # Push the image after building
         tags: yourdockerhubusername/your-repo-name:latest
 
-    - name: Post result to Slack (optional)
-      uses: 8398a7/action-slack@v4
-      with:
-        status: ${{ job.status }}
-        fields: repo,message
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # Optional for Slack notifications
+  
     

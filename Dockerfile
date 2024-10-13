@@ -9,7 +9,7 @@ COPY . /app
 WORKDIR /app
 
 # Install any additional dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+#RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the Rasa port
 EXPOSE 5005

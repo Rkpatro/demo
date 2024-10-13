@@ -3,10 +3,10 @@
 FROM rasa/rasa:latest-full
 
 # Copy any additional files (if you have custom components or code)
-COPY . /app
+COPY . /demo
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /demo
 
 # Install any additional dependencies
 RUN pip install --no-cache-dir -r requirements.txt

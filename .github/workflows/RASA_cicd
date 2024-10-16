@@ -1,0 +1,72 @@
+name: Rasa CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Triggers on push to the 'main' branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      # Step 3: Install Rasa dependencies
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          pip install rasa
+
+      # Step 4: Validate Rasa model
+      - name: Validate Rasa files
+        run: |
+          source venv/bin/activate
+          rasa data validate
+
+      # Step 5: Run Rasa NLU tests
+      - name: Run NLU tests
+        run: |
+          source venv/bin/activate
+          rasa test nlu
+
+      # Step 6: Run Core tests (stories)
+      - name: Run Core tests
+        run: |
+          source venv/bin/activate
+          rasa test core
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test  # Runs only if tests are successful
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t rasa-bot:${{ github.sha }} .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Only runs if the build job succeeds
+
+    steps:
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          docker pull rasa-bot:${{ github.sha }}
+          docker stop rasa-container || true
+          docker run -d --rm --name rasa-container -p 5005:5005 rasa-bot:${{ github.sha }}
+          EOF

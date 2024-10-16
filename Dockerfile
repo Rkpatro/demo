@@ -1,6 +1,6 @@
 # Rasa Dockerfile
 # Use the official Rasa image
-FROM rasa/rasa:latest-full
+FROM python/python:latest-full
 
 # Copy any additional files (if you have custom components or code)
 COPY . /app
